@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Login page</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+
+    <body class="Login">
+        <div class="form-container">
+            <h1>Log into Flogram</h1>
+
+            <form method="post">
+                <fieldset>
+                    <label for="login_id" style="display: none;">Mobile number, username or email</label>
+                    <input type="text" name="login_id" id="login_id" placeholder="Mobile number, username or email"> 
+                    
+                    <label for="password" style="display: none;">Password</label>
+                    <input type="password" name="password" id="password" placeholder="Password"> 
+                    
+                    <input type="submit" name="submit" id="submit" value="Log in" class="login-btn"> 
+                </fieldset>
+            </form>
+            
+            <a href="login.php" class="secondary-btn">Forgot password?</a>
+        </div>
+    </body>
+</html>
