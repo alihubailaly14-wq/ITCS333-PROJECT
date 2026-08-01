@@ -1,32 +1,27 @@
 <?php
 session_start();
+include 'connect.php'; 
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-
     $login_id = trim($_POST["login_id"] ?? "");
     $password = $_POST["password"] ?? "";
 
     if ($login_id === "" || $password === "") {
         $error = "Please complete all fields.";
-    } elseif (!isset($_SESSION["registered_user"])) {
-        $error = "Account not found.";
     } else {
-        $user = $_SESSION["registered_user"];
+        $stmt = $conn->prepare("SELECT * FROM users WHERE email = ? AND password_hash = ?");
+        $stmt->execute([$login_id, hash('sha256', $password)]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        $correct_login =
-            strcasecmp($login_id, $user["email"]) === 0 ||
-            strcasecmp($login_id, $user["username"]) === 0;
-
-        if ($correct_login && isset($user["password_hash"]) && password_verify($password, $user["password_hash"])) {
+        if ($user) {
             session_regenerate_id(true);
 
-          $_SESSION["logged_in"] = true;
-          $_SESSION["user"] = $user;
-          $_SESSION["name"] = $user["name"];
-          $_SESSION["email"] = $user["email"];
-          $_SESSION["username"] = $user["username"];
+            $_SESSION["logged_in"] = true;
+            $_SESSION["user_id"] = $user["user_id"];
+            $_SESSION["name"] = $user["full_name"];
+            $_SESSION["email"] = $user["email"];
 
-            header("Location: home.php");
+            header("Location: home.php?login=success");
             exit();
         } else {
             $error = "Incorrect login information.";
@@ -52,10 +47,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
             <form method="post">
                 <fieldset>
-                    <label for="login_id" style="display: none;">Mobile number, username or email</label>
+                    <label for="login_id" style="display: none;">Email</label>
 
                     <input type="text" name="login_id" id="login_id"
-                    placeholder="Mobile number, username or email"
+                    placeholder="Email"
                     value="<?= htmlspecialchars($_POST["login_id"] ?? "") ?>">
 
                     <label for="password" style="display: none;">Password</label>
@@ -68,10 +63,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 </fieldset>
             </form>
 
-            <a href="forgot_password.php" class="secondary-btn">Forgot password?</a>
-
             <a href="Regestaration.php" class="secondary-btn">You do not have an account? Create one</a>
         </div>
     </body>
 </html>
-
