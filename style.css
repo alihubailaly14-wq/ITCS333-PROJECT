@@ -417,3 +417,47 @@ body.Home {
     max-width: 600px; 
     margin: 0 auto; 
 }
+
+.error-msg {
+            color: red;
+            font-size: 14px;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+
+            .profile-header {
+                background-color: #ffffff;
+                border: 1px solid #dbdbdb;
+                border-radius: 8px;
+                padding: 30px;
+                margin-bottom: 30px;
+                text-align: center;
+            }
+            .profile-avatar {
+                width: 100px;
+                height: 100px;
+                background-color: #e0e0e0;
+                border-radius: 50%;
+                margin: 0 auto 15px auto;
+            }
+            .profile-name {
+                font-size: 24px;
+                font-weight: bold;
+                margin-bottom: 5px;
+            }
+            .profile-email {
+                color: #8e8e8e;
+                margin-bottom: 15px;
+            }
+            .profile-stats {
+                font-size: 14px;
+                color: #262626;
+            }
+            .section-title {
+                margin-bottom: 15px;
+                font-size: 18px;
+                color: #262626;
+                border-bottom: 1px solid #dbdbdb;
+                padding-bottom: 10px;
+            }
