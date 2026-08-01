@@ -1,123 +1,84 @@
 <?php
+session_start();
+include 'connect.php';
 
-$posts = [
-    [
-        'post_id' => 1,
-        'user_id' => 1,
-        'author' => 'Ali Hubail',
-        'post_text' => 'This is my first blog post.',
-        'image_path' => 'https://placehold.co/600x350',
-        'created_at' => '2026-07-28 10:30:00'
-    ],
-    [
-        'post_id' => 2,
-        'user_id' => 2,
-        'author' => 'Ahmed Mohammed',
-        'post_text' => 'Welcome to our community blog.',
-        'image_path' => 'https://placehold.co/600x350',
-        'created_at' => '2026-07-30 18:45:00'
-    ],
-    [
-        'post_id' => 3,
-        'user_id' => 1,
-        'author' => 'Ali Hubail',
-        'post_text' => 'Today I learned about PHP arrays.',
-        'image_path' => 'https://placehold.co/600x350',
-        'created_at' => '2026-07-29 14:20:00'
-    ]
-];
-
-function sortPostsByNewest($posts)
-{
-    usort($posts, function ($post1, $post2) {
-        return strtotime($post2['created_at'])
-            - strtotime($post1['created_at']);
-    });
-
-    return $posts;
-}
-
-$posts = sortPostsByNewest($posts);
-
+$stmt = $conn->prepare("
+    SELECT posts.post_id, posts.post_text, posts.image_path, posts.created_at, users.full_name 
+    FROM posts 
+    JOIN users ON posts.user_id = users.user_id 
+    ORDER BY posts.created_at DESC
+");
+$stmt->execute();
 ?>
 
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Flogram - Home</title>
-        <link rel="stylesheet" href="style.css">
-    </head>
-
-    <body class="Home">
+<head>
+    <title>Flogram - Home</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="Home">
+    
+    <nav class="sidebar">
+        <h2 class="logo">Flogram</h2>
         
+        <p class="subtitle">
+            <?php echo htmlspecialchars($_SESSION['name'] ?? $_SESSION['full_name'] ?? 'User'); ?>
+        </p>
 
-        <nav class="sidebar">
-            <h2 class="logo">Flogram</h2>
-            <ul class="nav-links">
-                <li><a href="home.php"> Home</a></li>
-                <li><a href="search.php"> Search</a></li>
-                <li><a href="Create_Post.php"> Create Post</a></li> 
-                <li><a href="profile.php"> Profile</a></li>
-                <li><a href="login.php"> Log Out</a></li>
-            </ul>
-        </nav>
+        <ul class="nav-links">
+            <li><a href="home.php"> Home</a></li>
+            <li><a href="search.php"> Search</a></li>
+            <li><a href="createpost.php"> Create Post</a></li> 
+            <li><a href="profile.php"> Profile</a></li>
+            <li><a href="login.php"> Log Out</a></li>
+        </ul>
+    </nav>
 
-        <main class="feed">
-
-        <!-- هنا عدلت الكود عشان يعرض كل البوستات -->
-<?php foreach ($posts as $post): ?>
-
-    <article class="post">
-
-        <header class="post-header">
-            <div class="user-info">
-
-                <div class="avatar"></div>
-
-                <a href="#" class="username">
-                    <?php echo htmlspecialchars($post['author']); ?>
-                </a>
-
-                <span class="timestamp">
-                    • <?php echo htmlspecialchars($post['created_at']); ?>
-                </span>
-
+    <main class="feed">
+        
+        <?php if (isset($_GET['success']) && $_GET['success'] == 1): ?>
+            <div class="subtitle">
+                User Created! Welcome to Flogram.
             </div>
+        <?php endif; ?>
 
-            <button class="delete-btn">Delete</button>
-        </header>
-
-        <a
-            href="post-detail.php?id=<?php echo $post['post_id']; ?>"
-            class="post-link"
-        >
-
-            <div class="post-image">
-                <img
-                    src="<?php echo htmlspecialchars($post['image_path']); ?>"
-                    alt="Post Image"
-                >
+        <?php if (isset($_GET['login']) && $_GET['login'] == 'success'): ?>
+            <div class="subtitle">
+                Welcome back, <?php echo htmlspecialchars($_SESSION['name'] ?? $_SESSION['full_name'] ?? 'User'); ?>!
             </div>
+        <?php endif; ?>
+        
+        <?php while($row = $stmt->fetch(PDO::FETCH_ASSOC)) { ?>
+        <article class="post">
+            <header class="post-header">
+                <div class="user-info">
+                    <div class="avatar"></div>
+                    <a href="#" class="username"><?php echo htmlspecialchars($row['full_name']); ?></a>
+                    <span class="timestamp">• <?php echo htmlspecialchars($row['created_at']); ?></span>
+                </div>
+                <a href="delete.php?id=<?php echo $row['post_id']; ?>" class="delete-btn">Delete</a>
+            </header>
+            
+            <a href="post-detail.php?id=<?php echo $row['post_id']; ?>" class="post-link">
+                <div class="post-image">
+                    <?php if (!empty($row['image_path'])) { ?>
+                        <img src="<?php echo htmlspecialchars($row['image_path']); ?>" alt="Post Image">
+                    <?php } else { ?>
+                        <img src="https://placehold.co/600x400?text=No+Image" alt="No Image">
+                    <?php } ?>
+                </div>
+                
+                <div class="post-content">
+                    <p>
+                        <span class="username"><?php echo htmlspecialchars($row['full_name']); ?></span> 
+                        <?php echo nl2br(htmlspecialchars($row['post_text'])); ?>
+                    </p>
+                </div>
+            </a>
+        </article>
+        <?php } ?>
 
-            <div class="post-content">
-                <p>
-                    <span class="username">
-                        <?php echo htmlspecialchars($post['author']); ?>
-                    </span>
-
-                    <?php echo htmlspecialchars($post['post_text']); ?>
-                </p>
-            </div>
-
-        </a>
-
-    </article>
-
-    <!-- هنا خلص عرض كل البوستات -->
-
-<?php endforeach; ?>
-
-        </main>
-
-    </body>
+    </main>
+</body>
 </html>
