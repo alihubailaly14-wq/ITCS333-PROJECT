@@ -1,51 +1,88 @@
+<?php
+session_start();
+include 'connect.php';
+
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit();
+}
+
+if (!isset($_GET['id']) || empty($_GET['id'])) {
+    header("Location: home.php");
+    exit();
+}
+
+$post_id = $_GET['id'];
+
+$stmt = $conn->prepare("
+    SELECT posts.post_id, posts.post_text, posts.image_path, posts.created_at, posts.user_id, users.full_name 
+    FROM posts 
+    JOIN users ON posts.user_id = users.user_id 
+    WHERE posts.post_id = ?
+");
+$stmt->execute([$post_id]);
+$post = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$post) {
+    header("Location: home.php");
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
         <title>Flogram - Post Details</title>
         <link rel="stylesheet" href="style.css">
     </head>
-
     
     <body class="Home">
-        
         
         <nav class="sidebar">
             <h2 class="logo">Flogram</h2>
             <ul class="nav-links">
                 <li><a href="home.php"> Home</a></li>
                 <li><a href="search.php"> Search</a></li>
-                <li><a href="create.php"> Create Post</a></li>
+                <li><a href="createpost.php"> Create Post</a></li>
                 <li><a href="profile.php"> Profile</a></li>
                 <li><a href="login.php"> Log Out</a></li>
             </ul>
         </nav>
-
         
         <main class="feed">
             
-            <div class="back-link">
-                <a href="home.php">⬅ Back to Feed</a>
+            <div class="back-link" style="margin-bottom: 20px;">
+                <a href="home.php" style="text-decoration: none; font-weight: bold; color: #0095f6;">⬅ Back to Feed</a>
             </div>
-
             
             <article class="post detail-post">
                 <header class="post-header">
                     <div class="user-info">
                         <div class="avatar"></div>
-                        <a href="#" class="username">Ali Hubail</a>
-                        <span class="timestamp">• 1 w</span>
+                        <a href="#" class="username"><?php echo htmlspecialchars($post['full_name']); ?></a>
+                        <span class="timestamp">• <?php echo htmlspecialchars($post['created_at']); ?></span>
                     </div>
                     
-                    <button class="delete-btn">Delete</button>
+                    <?php if ($_SESSION['user_id'] == $post['user_id']): ?>
+                        <a href="delete.php?id=<?php echo $post['post_id']; ?>" class="delete-btn" style="text-decoration: none;">Delete</a>
+                    <?php endif; ?>
                 </header>
                 
-                
                 <div class="post-image">
-                    <img src="https://placehold.co/100?text=Vlog" alt="Post Image">
+                    <?php if (!empty($post['image_path'])): ?>
+                        <img src="<?php echo htmlspecialchars($post['image_path']); ?>" alt="Post Image" style="max-width: 100%; height: auto;">
+                    <?php else: ?>
+                        <div style="padding: 40px; background: #f8f9fa; border-top: 1px solid #dbdbdb; border-bottom: 1px solid #dbdbdb; text-align: center; color: #8e8e8e;">
+                            No image uploaded
+                        </div>
+                    <?php endif; ?>
                 </div>
                 
                 <div class="post-content">
-                    <p><span class="username">Ali Hubail</span> This is the full detail view of the post. It includes the author, the timestamp, the uploaded picture, and this text description. The user can also delete the post from this view.</p>
+                    <p>
+                        <span class="username"><?php echo htmlspecialchars($post['full_name']); ?></span> 
+                        <?php echo nl2br(htmlspecialchars($post['post_text'])); ?>
+                    </p>
                 </div>
             </article>
 
