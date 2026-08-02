@@ -22,9 +22,9 @@ picture
 
 --fake users and posts
 INSERT INTO users (email, password_hash, full_name) VALUES
-('alihubailaly14@gmail.com', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f', 'Ali Hubail'),
-('dr.instructor@university.edu', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f', 'Dr. Instructor'),
-('sara.ahmed@example.com', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f', 'Sara Ahmed');
+('example1@gmail.com', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f', 'Ali Hubail'),
+('example2@gmail.com', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f', 'Dr. Instructor'),
+('example3@gmail.com', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f', 'Sara Ahmed');
 
 INSERT INTO posts (user_id, post_text, image_path) VALUES
 (1, 'Just published my first blog post on Flogram! ✍️ I''ll be sharing my weekly tips on database normalization and advanced SQL queries. Let me know what topics you want me to write about next! #FirstBlog #TechBlogger', 'uploads/post_fake_image3.jpg'),
