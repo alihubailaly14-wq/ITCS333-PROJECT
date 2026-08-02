@@ -63,7 +63,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 </fieldset>
             </form>
 
-            <a href="Regestaration.php" class="secondary-btn">You do not have an account? Create one</a>
+            <a href="Registration.php" class="secondary-btn">You do not have an account? Create one</a>
         </div>
     </body>
 </html>
