@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $hashedPassword = hash('sha256', $password); 
             $stmt->execute([$email, $hashedPassword, $name]); 
             
-            header('Location: home.php?success=1');
+            header('Location: login.php?registered=1');
             exit();
         }
     }

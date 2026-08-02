@@ -3,7 +3,7 @@ session_start();
 include 'connect.php';
 
 $stmt = $conn->prepare("
-    SELECT posts.post_id, posts.post_text, posts.image_path, posts.created_at, users.full_name 
+    SELECT posts.post_id, posts.user_id, posts.post_text, posts.image_path, posts.created_at, users.full_name
     FROM posts 
     JOIN users ON posts.user_id = users.user_id 
     ORDER BY posts.created_at DESC
@@ -57,7 +57,13 @@ $stmt->execute();
                     <a href="#" class="username"><?php echo htmlspecialchars($row['full_name']); ?></a>
                     <span class="timestamp">• <?php echo htmlspecialchars($row['created_at']); ?></span>
                 </div>
-                <a href="delete.php?id=<?php echo $row['post_id']; ?>" class="delete-btn">Delete</a>
+                <?php if ($_SESSION['user_id'] == $row['user_id']) { ?>
+                    <!-- to make sure Delete button show only for your posts -->
+                    <a href="delete.php?id=<?php echo $row['post_id']; ?>" class="delete-btn">
+                        Delete
+                    </a>
+
+                <?php } ?>
             </header>
             
             <a href="post-detail.php?id=<?php echo $row['post_id']; ?>" class="post-link">

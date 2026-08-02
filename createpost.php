@@ -67,7 +67,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
             $stmt->execute([$user_id, $post_text, $image_path]);
             
             
-            header("Location: createpost.php");
+            header("Location: home.php?post=success");
             exit();
         } catch (PDOException $e) {
             $error = "Database error. Please try again.";
@@ -75,14 +75,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
     }
 }
 
-
-$feed_stmt = $conn->prepare("
-    SELECT posts.post_id, posts.post_text, posts.image_path, posts.created_at, users.full_name 
-    FROM posts 
-    JOIN users ON posts.user_id = users.user_id 
-    ORDER BY posts.created_at DESC
-");
-$feed_stmt->execute();
 ?>
 
 <!DOCTYPE html>
@@ -135,37 +127,6 @@ $feed_stmt->execute();
                     <input type="submit" name="submit" value="Post to Feed" style="margin-top: 10px;">
                 </form>
             </div>
-
-            
-            <?php while($row = $feed_stmt->fetch(PDO::FETCH_ASSOC)) { ?>
-            <article class="post">
-                <header class="post-header">
-                    <div class="user-info">
-                        <div class="avatar"></div>
-                        <a href="#" class="username"><?php echo htmlspecialchars($row['full_name']); ?></a>
-                        <span class="timestamp">• <?php echo htmlspecialchars($row['created_at']); ?></span>
-                    </div>
-                </header>
-                
-                <a href="post-detail.php?id=<?php echo $row['post_id']; ?>" class="post-link">
-                    <div class="post-image">
-                        <?php if (!empty($row['image_path'])) { ?>
-                            <img src="<?php echo htmlspecialchars($row['image_path']); ?>" alt="Post Image">
-                        <?php } else { ?>
-                            
-                            <div style="padding: 20px; background: #f8f9fa; border-top: 1px solid #dbdbdb; border-bottom: 1px solid #dbdbdb;"></div>
-                        <?php } ?>
-                    </div>
-                    
-                    <div class="post-content">
-                        <p>
-                            <span class="username"><?php echo htmlspecialchars($row['full_name']); ?></span> 
-                            <?php echo nl2br(htmlspecialchars($row['post_text'])); ?>
-                        </p>
-                    </div>
-                </a>
-            </article>
-            <?php } ?>
 
         </main>
     </body>
