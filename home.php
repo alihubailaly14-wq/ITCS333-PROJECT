@@ -86,5 +86,6 @@ $stmt->execute();
         <?php } ?>
 
     </main>
+    <script src="test.js"></script>
 </body>
 </html>

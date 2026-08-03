@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     
     if(empty($name) || empty($email) || empty($password) || empty($cpassword) || empty($_POST['agree'])){
         $flag = false;
-        $message .= "Some fields are empty or policy not agreed! </br>";
+        $message .= "Some fields are empty or policy not agreed! <br/>";
     }
 
     if(strlen($password) < 8){
@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $checkEmail->execute([$email]);
         
         if ($checkEmail->rowCount() > 0) {
-            $message = "<span style='color: #ed4956;'>This email is already registered! Please log in instead.</span>";
+            $message = "This email is already registered! Please log in instead.";
         } else {
             $stmt = $conn->prepare("INSERT INTO users (email, password_hash, full_name) VALUES (?, ?, ?)");
             $hashedPassword = hash('sha256', $password); 
@@ -80,8 +80,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         <a href="login.php" class="secondary-btn">I already have an account</a>
         
-        <br/>
-        <?php if(isset($message) && $message != "") echo "<div style='text-align: center; margin-top: 10px; font-weight: bold;'>$message</div>"; ?>
+        <?php if(!empty($message)): ?>
+            <div class="error-msg" style="margin-top: 15px;">
+                <?php echo $message; ?>
+            </div>
+        <?php endif; ?>
     </div>
+    <script src="test.js"></script>
 </body>
 </html>

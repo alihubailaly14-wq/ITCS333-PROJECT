@@ -1,5 +1,4 @@
 <?php
-
 session_start();
 include 'connect.php';
 
@@ -29,7 +28,6 @@ if (isset($_GET['search'])) {
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -47,12 +45,12 @@ if (isset($_GET['search'])) {
         <h2 class="logo">Flogram</h2>
 
         <p class="subtitle">
-            <?php echo $_SESSION['name']; ?>
+            <?php echo htmlspecialchars($_SESSION['name'] ?? $_SESSION['full_name'] ?? 'User'); ?>
         </p>
 
         <ul class="nav-links">
             <li><a href="home.php">Home</a></li>
-            <li><a href="Search.php">Search</a></li>
+            <li><a href="search.php">Search</a></li>
             <li><a href="createpost.php">Create Post</a></li>
             <li><a href="profile.php">Profile</a></li>
             <li><a href="login.php">Log Out</a></li>
@@ -62,17 +60,17 @@ if (isset($_GET['search'])) {
 
     <main class="feed">
 
-        <div class="create-post-box">
+        <div class="form-container">
 
-            <h2>Search Posts</h2>
+            <h1>Search Posts</h1>
 
-            <form method="get" action="Search.php">
+            <form method="get" action="search.php">
 
                 <input
                     type="text"
                     name="search"
                     placeholder="Search posts..."
-                    value="<?php echo $search; ?>"
+                    value="<?php echo htmlspecialchars($search); ?>"
                 >
 
                 <input type="submit" value="Search">
@@ -81,11 +79,7 @@ if (isset($_GET['search'])) {
 
         </div>
 
-        <?php
-
-        foreach ($results as $row) {
-
-        ?>
+        <?php foreach ($results as $row) { ?>
 
             <article class="post">
 
@@ -96,20 +90,16 @@ if (isset($_GET['search'])) {
                         <div class="avatar"></div>
 
                         <a href="#" class="username">
-                            <?php echo $row['full_name']; ?>
+                            <?php echo htmlspecialchars($row['full_name']); ?>
                         </a>
 
                         <span class="timestamp">
-                            <?php echo $row['created_at']; ?>
+                            • <?php echo htmlspecialchars($row['created_at']); ?>
                         </span>
 
                     </div>
 
-                    <?php
-
-                    if ($_SESSION['user_id'] == $row['user_id']) {
-
-                    ?>
+                    <?php if ($_SESSION['user_id'] == $row['user_id']) { ?>
 
                         <a
                             href="delete.php?id=<?php echo $row['post_id']; ?>"
@@ -118,11 +108,7 @@ if (isset($_GET['search'])) {
                             Delete
                         </a>
 
-                    <?php
-
-                    }
-
-                    ?>
+                    <?php } ?>
 
                 </header>
 
@@ -133,46 +119,32 @@ if (isset($_GET['search'])) {
 
                     <div class="post-image">
 
-                        <?php
-
-                        if (!empty($row['image_path'])) {
-
-                        ?>
+                        <?php if (!empty($row['image_path'])) { ?>
 
                             <img
-                                src="<?php echo $row['image_path']; ?>"
+                                src="<?php echo htmlspecialchars($row['image_path']); ?>"
                                 alt="Post Image"
                             >
 
-                        <?php
-
-                        } else {
-
-                        ?>
+                        <?php } else { ?>
 
                             <img
                                 src="https://placehold.co/600x400?text=No+Image"
                                 alt="No Image"
                             >
 
-                        <?php
-
-                        }
-
-                        ?>
+                        <?php } ?>
 
                     </div>
 
                     <div class="post-content">
 
                         <p>
-
                             <span class="username">
-                                <?php echo $row['full_name']; ?>
+                                <?php echo htmlspecialchars($row['full_name']); ?>
                             </span>
 
-                            <?php echo $row['post_text']; ?>
-
+                            <?php echo nl2br(htmlspecialchars($row['post_text'])); ?>
                         </p>
 
                     </div>
@@ -181,24 +153,17 @@ if (isset($_GET['search'])) {
 
             </article>
 
-        <?php
+        <?php } ?>
 
-        }
+        <?php if ($search != "" && count($results) == 0) { ?>
 
-        if ($search != "" && count($results) == 0) {
+            <p class="subtitle" style="text-align: center;">No posts found.</p>
 
-        ?>
-
-            <p>No posts found.</p>
-
-        <?php
-
-        }
-
-        ?>
+        <?php } ?>
 
     </main>
 
+    <script src="test.js"></script>
 </body>
 
 </html>

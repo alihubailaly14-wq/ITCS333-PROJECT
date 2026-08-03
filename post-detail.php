@@ -51,8 +51,8 @@ if (!$post) {
         
         <main class="feed">
             
-            <div class="back-link" style="margin-bottom: 20px;">
-                <a href="home.php" style="text-decoration: none; font-weight: bold; color: #0095f6;">⬅ Back to Feed</a>
+            <div class="back-link">
+                <a href="home.php">⬅ Back to Feed</a>
             </div>
             
             <article class="post detail-post">
@@ -64,17 +64,15 @@ if (!$post) {
                     </div>
                     
                     <?php if ($_SESSION['user_id'] == $post['user_id']): ?>
-                        <a href="delete.php?id=<?php echo $post['post_id']; ?>" class="delete-btn" style="text-decoration: none;">Delete</a>
+                        <a href="delete.php?id=<?php echo $post['post_id']; ?>" class="delete-btn">Delete</a>
                     <?php endif; ?>
                 </header>
                 
                 <div class="post-image">
                     <?php if (!empty($post['image_path'])): ?>
-                        <img src="<?php echo htmlspecialchars($post['image_path']); ?>" alt="Post Image" style="max-width: 100%; height: auto;">
+                        <img src="<?php echo htmlspecialchars($post['image_path']); ?>" alt="Post Image">
                     <?php else: ?>
-                        <div style="padding: 40px; background: #f8f9fa; border-top: 1px solid #dbdbdb; border-bottom: 1px solid #dbdbdb; text-align: center; color: #8e8e8e;">
-                            No image uploaded
-                        </div>
+                        <img src="https://placehold.co/600x400?text=No+Image" alt="No Image">
                     <?php endif; ?>
                 </div>
                 
@@ -87,6 +85,7 @@ if (!$post) {
             </article>
 
         </main>
+        <script src="test.js"></script>
 
     </body>
 </html>

@@ -42,28 +42,28 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             <h1>Log into Flogram</h1>
 
             <?php if (isset($error)): ?>
-                <p class="error-message"><?= htmlspecialchars($error) ?></p>
+                <p class="error-msg"><?= htmlspecialchars($error) ?></p>
             <?php endif; ?>
 
             <form method="post">
                 <fieldset>
-                    <label for="login_id" style="display: none;">Email</label>
-
+                    <label for="login_id">Email</label>
                     <input type="text" name="login_id" id="login_id"
                     placeholder="Email"
                     value="<?= htmlspecialchars($_POST["login_id"] ?? "") ?>">
 
-                    <label for="password" style="display: none;">Password</label>
-
+                    <label for="password">Password</label>
                     <input type="password" name="password" id="password"
                     placeholder="Password">
 
                     <input type="submit" name="submit" id="submit"
-                    value="Log in" class="login-btn">
+                    value="Log in">
                 </fieldset>
             </form>
 
             <a href="Registration.php" class="secondary-btn">You do not have an account? Create one</a>
         </div>
+        
+        <script src="test.js"></script>
     </body>
 </html>

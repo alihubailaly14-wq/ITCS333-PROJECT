@@ -2,7 +2,6 @@
 session_start();
 include 'connect.php'; 
 
-
 if(!isset($_SESSION['user_id'])){
     header("Location: login.php");
     exit();
@@ -10,7 +9,6 @@ if(!isset($_SESSION['user_id'])){
 
 $error = '';
 $success = '';
-
 
 if($_SERVER['REQUEST_METHOD'] == 'POST'){
     $title = trim($_POST['title'] ?? '');
@@ -24,7 +22,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
         $post_text = !empty($title) ? $title : $comment;
     }
 
-    
     $has_image = isset($_FILES['post']) && $_FILES['post']['error'] == UPLOAD_ERR_OK;
 
     if(empty($post_text) && !$has_image){
@@ -46,7 +43,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
                 mkdir($uploadDir, 0755, true);
             }
 
-            
             $newfilename = uniqid('post_', true) . '.' . $extension;
             $destpath = $uploadDir . $newfilename;
 
@@ -59,13 +55,11 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
             $error = "Invalid file format. Only PNG and JPG files are allowed.";
         }
     }
-
     
     if(empty($error)){
         try {
             $stmt = $conn->prepare("INSERT INTO posts (user_id, post_text, image_path) VALUES (?, ?, ?)");
             $stmt->execute([$user_id, $post_text, $image_path]);
-            
             
             header("Location: home.php?post=success");
             exit();
@@ -74,7 +68,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
         }
     }
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -85,7 +78,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
     </head>
 
     <body class="Home">
-        
         
         <nav class="sidebar">
             <h2 class="logo">Flogram</h2>
@@ -101,33 +93,35 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
             </ul>
         </nav>
 
-        
         <main class="feed">
             
-            
-            <div class="create-post-box">
-                <h2 style="font-size: 18px; margin-bottom: 5px; margin-top: 0;">Create a New Post</h2>
-                <p style="font-size: 13px; color: #737373; margin-bottom: 15px;">Share with the people your new trip.</p>
+            <div class="form-container">
+                <h1>Create a New Post</h1>
+                <p class="subtitle">Share with the people your new trip.</p>
                 
                 <?php if(!empty($error)): ?>
-                    <p class="error-message"><?= htmlspecialchars($error) ?></p>
+                    <p class="error-msg"><?= htmlspecialchars($error) ?></p>
                 <?php endif; ?>
 
-                
                 <form method="post" enctype="multipart/form-data">
                     <label for="title">Title (Optional)</label>
                     <input type="text" name="title" id="title" placeholder="Enter a title...">
                     
                     <label for="comment">Caption</label>
                     <textarea name="comment" id="comment" rows="3" placeholder="What's on your mind?"></textarea>
+                    
+                    <!-- Cleaned up character counter using the disclaimer class -->
+                    <div id="char-counter" class="disclaimer">0 / 280 characters</div>
 
-                    <label for="post" style="margin-top: 10px;">Upload Image (JPG/PNG)</label>
+                    <label for="post">Upload Image (JPG/PNG)</label>
                     <input type="file" name="post" id="post" accept=".jpg, .jpeg, .png">
 
-                    <input type="submit" name="submit" value="Post to Feed" style="margin-top: 10px;">
+                    <input type="submit" id="postSubmitBtn" name="submit" value="Post to Feed">
                 </form>
             </div>
 
         </main>
+        
+        <script src="test.js"></script>
     </body>
 </html>
