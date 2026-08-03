@@ -233,12 +233,7 @@ $post_stmt->execute([$user_id]);
                         ) ?>"
                     >
 
-                    <button
-                        name="submit"
-                        type="submit"
-                    >
-                        Update
-                    </button>
+                    <input type="submit" name="submit" value="update">
 
                 </form>
 
