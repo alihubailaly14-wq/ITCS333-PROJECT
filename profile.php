@@ -1,8 +1,7 @@
 <?php
-session_start();
 include 'connect.php';
 
-if (!isset($_SESSION['user_id'])) {
+if (!isset($_COOKIE['user_id'])) {
     header("Location: login.php");
     exit();
 }
@@ -11,7 +10,7 @@ if (!isset($_SESSION['user_id'])) {
    Get the current user's ID from the Session
    and fetch their current information.
 */
-$user_id = $_SESSION['user_id'];
+$user_id = $_COOKIE['user_id'];
 
 $stmt = $conn->prepare(
     "SELECT * FROM users WHERE user_id = ?"
@@ -31,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $full_name = trim($_POST['update_name']); // Matched to form input name
     $email = trim($_POST['update_email']);    // Matched to form input name
 
-    if ($id != $_SESSION['user_id']) {
+    if ($id != $_COOKIE['user_id']) {
         $message = "Invalid user.";
     } elseif (empty($full_name)) {
         $message = "Full name is required.";
@@ -63,9 +62,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             );
             $update_stmt->execute([$full_name, $email, $id]);
 
-            $_SESSION['name'] = $full_name;
-            $_SESSION['full_name'] = $full_name;
-            $_SESSION['email'] = $email;
+            setcookie("name", $full_name, time() + 3600, "/");
+            setcookie("email", $email, time() + 3600, "/");
 
             header("Location: profile.php?updated=1");
             exit();
@@ -98,11 +96,7 @@ $post_stmt->execute([$user_id]);
         <h2 class="logo">Flogram</h2>
         <p class="subtitle">
             <?php
-            echo htmlspecialchars(
-                $_SESSION['name'] ??
-                $_SESSION['full_name'] ??
-                'User'
-            );
+            echo htmlspecialchars($_COOKIE['name'] ?? 'User');
             ?>
         </p>
 
@@ -111,7 +105,7 @@ $post_stmt->execute([$user_id]);
             <li><a href="search.php"> Search</a></li>
             <li><a href="createpost.php"> Create Post</a></li>
             <li><a href="profile.php"> Profile</a></li>
-            <li><a href="login.php"> Log Out</a></li>
+            <li><a href="logout.php"> Log Out</a></li>
         </ul>
     </nav>
 

@@ -1,8 +1,7 @@
 <?php
-session_start();
-include 'connect.php'; 
+include 'connect.php';
 
-if(!isset($_SESSION['user_id'])){
+if(!isset($_COOKIE['user_id'])){
     header("Location: login.php");
     exit();
 }
@@ -13,7 +12,7 @@ $success = '';
 if($_SERVER['REQUEST_METHOD'] == 'POST'){
     $title = trim($_POST['title'] ?? '');
     $comment = trim($_POST['comment'] ?? '');
-    $user_id = $_SESSION['user_id'];
+    $user_id = $_COOKIE['user_id'];
     $image_path = null;
 
     if (!empty($title) && !empty($comment)) {
@@ -82,14 +81,14 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
         <nav class="sidebar">
             <h2 class="logo">Flogram</h2>
             <p class="subtitle">
-            <?php echo htmlspecialchars($_SESSION['name'] ?? $_SESSION['full_name'] ?? 'User'); ?>
+            <?php echo htmlspecialchars($_COOKIE['name'] ?? 'User'); ?>
             </p>
             <ul class="nav-links">
                 <li><a href="home.php">Home</a></li>
                 <li><a href="search.php">Search</a></li>
                 <li><a href="createpost.php">Create Post</a></li>
                 <li><a href="profile.php">Profile</a></li>
-                <li><a href="login.php">Log Out</a></li>
+                <li><a href="logout.php">Log Out</a></li>
             </ul>
         </nav>
 

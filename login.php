@@ -1,6 +1,5 @@
 <?php
-session_start();
-include 'connect.php'; 
+include 'connect.php';
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $login_id = trim($_POST["login_id"] ?? "");
@@ -14,12 +13,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($user) {
-            session_regenerate_id(true);
 
-            $_SESSION["logged_in"] = true;
-            $_SESSION["user_id"] = $user["user_id"];
-            $_SESSION["name"] = $user["full_name"];
-            $_SESSION["email"] = $user["email"];
+            setcookie("user_id", $user["user_id"], time() + 3600, "/");
+            setcookie("name", $user["full_name"], time() + 3600, "/");
+            setcookie("email", $user["email"], time() + 3600, "/");
 
             header("Location: home.php?login=success");
             exit();
@@ -63,7 +60,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
             <a href="Registration.php" class="secondary-btn">You do not have an account? Create one</a>
         </div>
-        
+
         <script src="test.js"></script>
     </body>
 </html>

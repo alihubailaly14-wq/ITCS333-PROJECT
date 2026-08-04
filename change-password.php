@@ -1,13 +1,12 @@
 <?php
-session_start();
 include 'connect.php';
 
-if (!isset($_SESSION['user_id'])) {
+if (!isset($_COOKIE['user_id'])) {
     header("Location: login.php");
     exit();
 }
 
-$user_id = $_SESSION['user_id'];
+$user_id = $_COOKIE['user_id'];
 $message = "";
 $success_msg = "";
 

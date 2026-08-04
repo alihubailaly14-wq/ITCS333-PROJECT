@@ -1,8 +1,7 @@
 <?php
-session_start();
 include 'connect.php';
 
-if (!isset($_SESSION['user_id'])) {
+if (!isset($_COOKIE['user_id'])) {
     header("Location: login.php");
     exit();
 }
@@ -45,7 +44,7 @@ if (!$post) {
                 <li><a href="search.php"> Search</a></li>
                 <li><a href="createpost.php"> Create Post</a></li>
                 <li><a href="profile.php"> Profile</a></li>
-                <li><a href="login.php"> Log Out</a></li>
+                <li><a href="logout.php"> Log Out</a></li>
             </ul>
         </nav>
         
@@ -63,7 +62,7 @@ if (!$post) {
                         <span class="timestamp">• <?php echo htmlspecialchars($post['created_at']); ?></span>
                     </div>
                     
-                    <?php if ($_SESSION['user_id'] == $post['user_id']): ?>
+                    <?php if ($_COOKIE['user_id'] == $post['user_id']): ?>
                         <a href="delete.php?id=<?php echo $post['post_id']; ?>" class="delete-btn">Delete</a>
                     <?php endif; ?>
                 </header>

@@ -1,8 +1,7 @@
 <?php
-session_start();
 include 'connect.php';
 
-if (!isset($_SESSION['user_id'])) {
+if (!isset($_COOKIE['user_id'])) {
     header("Location: login.php");
     exit();
 }
@@ -45,7 +44,7 @@ if (isset($_GET['search'])) {
         <h2 class="logo">Flogram</h2>
 
         <p class="subtitle">
-            <?php echo htmlspecialchars($_SESSION['name'] ?? $_SESSION['full_name'] ?? 'User'); ?>
+            <?php echo htmlspecialchars($_COOKIE['name'] ?? 'User'); ?>
         </p>
 
         <ul class="nav-links">
@@ -53,7 +52,7 @@ if (isset($_GET['search'])) {
             <li><a href="search.php">Search</a></li>
             <li><a href="createpost.php">Create Post</a></li>
             <li><a href="profile.php">Profile</a></li>
-            <li><a href="login.php">Log Out</a></li>
+            <li><a href="logout.php">Log Out</a></li>
         </ul>
 
     </nav>
@@ -99,7 +98,7 @@ if (isset($_GET['search'])) {
 
                     </div>
 
-                    <?php if ($_SESSION['user_id'] == $row['user_id']) { ?>
+                    <?php if ($_COOKIE['user_id'] == $row['user_id']) { ?>
 
                         <a
                             href="delete.php?id=<?php echo $row['post_id']; ?>"

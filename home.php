@@ -1,6 +1,10 @@
 <?php
-session_start();
 include 'connect.php';
+
+if (!isset($_COOKIE['user_id'])) {
+    header("Location: login.php");
+    exit();
+}
 
 $stmt = $conn->prepare("
     SELECT posts.post_id, posts.user_id, posts.post_text, posts.image_path, posts.created_at, users.full_name
@@ -23,7 +27,7 @@ $stmt->execute();
         <h2 class="logo">Flogram</h2>
         
         <p class="subtitle">
-            <?php echo htmlspecialchars($_SESSION['name'] ?? $_SESSION['full_name'] ?? 'User'); ?>
+            <?php echo htmlspecialchars($_COOKIE['name'] ?? 'User'); ?>
         </p>
 
         <ul class="nav-links">
@@ -31,7 +35,7 @@ $stmt->execute();
             <li><a href="search.php"> Search</a></li>
             <li><a href="createpost.php"> Create Post</a></li> 
             <li><a href="profile.php"> Profile</a></li>
-            <li><a href="login.php"> Log Out</a></li>
+            <li><a href="logout.php"> Log Out</a></li>
         </ul>
     </nav>
 
@@ -45,7 +49,7 @@ $stmt->execute();
 
         <?php if (isset($_GET['login']) && $_GET['login'] == 'success'): ?>
             <div class="subtitle">
-                Welcome back, <?php echo htmlspecialchars($_SESSION['name'] ?? $_SESSION['full_name'] ?? 'User'); ?>!
+                Welcome back, <?php echo htmlspecialchars($_COOKIE['name'] ?? 'User'); ?>!
             </div>
         <?php endif; ?>
         
@@ -57,7 +61,7 @@ $stmt->execute();
                     <a href="#" class="username"><?php echo htmlspecialchars($row['full_name']); ?></a>
                     <span class="timestamp">• <?php echo htmlspecialchars($row['created_at']); ?></span>
                 </div>
-                <?php if ($_SESSION['user_id'] == $row['user_id']) { ?>
+                <?php if ($_COOKIE['user_id'] == $row['user_id']) { ?>
                     <!-- to make sure Delete button show only for your posts -->
                     <a href="delete.php?id=<?php echo $row['post_id']; ?>" class="delete-btn">
                         Delete
