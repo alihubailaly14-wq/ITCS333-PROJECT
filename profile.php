@@ -137,10 +137,9 @@ $post_stmt->execute([$user_id]);
                 Joined: <?php echo htmlspecialchars(date('F j, Y', strtotime($row['created_at']))); ?>
             </div>
             
-            <!-- Removed inline styles to let the secondary-btn class handle the layout natively -->
             <button id="toggleEditBtn" class="secondary-btn">Edit Profile</button>
+            <a href="change-password.php" class="secondary-btn" style="margin-top: 10px;">Change Password</a>
 
-            <!-- Kept display: none for the JavaScript toggle logic -->
             <div id="editFormContainer" style="display: none;">
                 <form id="profileUpdateForm" method="POST" action="">
                     <fieldset>
@@ -177,7 +176,7 @@ $post_stmt->execute([$user_id]);
                             <?= htmlspecialchars($row['full_name']) ?>
                         </span>
                         <span class="timestamp">
-                            • <?= htmlspecialchars($post['created_at']) ?>
+                             <?= htmlspecialchars($post['created_at']) ?>
                         </span>
                     </div>
                     <a href="delete.php?id=<?= $post['post_id'] ?>" class="delete-btn">Delete</a>
